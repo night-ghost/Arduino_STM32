@@ -53,7 +53,7 @@
 #define US_TO_ANGLE(us)   ((int16)(map((us), this->minPW, this->maxPW,  \
                                        this->minAngle, this->maxAngle)))
 
-Servo::Servo() {
+Servo::Servo(): pin(NOT_ATTACHED)  {
     this->resetFields();
 }
 
@@ -134,7 +134,7 @@ uint16 Servo::readMicroseconds() const {
         return 0;
     }
 
-    stm32_pin_info pin_info = PIN_MAP[this->pin];
+    const stm32_pin_info &pin_info = PIN_MAP[this->pin];
     uint16 compare = timer_get_compare(pin_info.timer_device,
                                        pin_info.timer_channel);
 

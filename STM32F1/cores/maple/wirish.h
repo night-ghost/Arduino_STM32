@@ -51,6 +51,10 @@
 
 #include <libmaple/stm32.h>
 
+#if !defined(UNUSED)
+#define UNUSED(x) (void)(x)
+#endif
+
 #include <boards.h>
 #include <io.h>
 #include <bit_constants.h>

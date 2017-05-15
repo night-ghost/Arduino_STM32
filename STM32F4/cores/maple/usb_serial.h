@@ -64,7 +64,7 @@ public:
     void disableBlockingTx(void);
 };
 
-extern USBSerial SerialUSB;
+extern USBSerial Serial;
 
 #endif
 

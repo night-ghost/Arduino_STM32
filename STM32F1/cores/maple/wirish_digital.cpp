@@ -54,7 +54,7 @@ void digitalWrite(uint8 pin, uint8 val) {
     gpio_write_bit(PIN_MAP[pin].gpio_device, PIN_MAP[pin].gpio_bit, val);
 }
 
-#if FALSE
+
 // Roger Clark. Deprecated these functions as they are not part of the standard Arduino API
 void togglePin(uint8 pin) {
     if (pin >= BOARD_NR_GPIO_PINS) {
@@ -64,6 +64,7 @@ void togglePin(uint8 pin) {
     gpio_toggle_bit(PIN_MAP[pin].gpio_device, PIN_MAP[pin].gpio_bit);
 }
 
+#if 0
 #define BUTTON_DEBOUNCE_DELAY 1
 
 uint8 isButtonPressed(uint8 pin, uint32 pressedLevel) {

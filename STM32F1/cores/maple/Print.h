@@ -27,6 +27,8 @@
 #include "WString.h"
 #include "Printable.h"
 
+#define SUPPORTS_PRINTF 1
+
 enum {
     BYTE = 0,
     BIN  = 2,

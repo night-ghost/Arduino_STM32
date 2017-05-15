@@ -95,6 +95,54 @@ mapleRET6.upload.auto_reset=true
 
 ##############################################################
 
+##############################################################
+mapleRET6bm.name=Maple (RET6) bare metal
+
+mapleRET6bm.vid.0=0x1EAF
+mapleRET6bm.pid.0=0x0004
+mapleRET6bm.build.board=MAPLE_RET6
+mapleRET6bm.build.core=maple
+mapleRET6bm.build.cpu_flags=-DMCU_STM32F103RE -DSERIAL_USB
+
+mapleRET6bm.build.ldscript=ld/stm32f103re-bootloader.ld
+mapleRET6bm.build.variant=maple_ret6
+#mapleRET6bm.build.vect=VECT_TAB_ADDR=0x8000000
+#mapleRET6bm.upload.tool=stlink_upload
+#mapleRET6bm.upload.protocol=maple_dfu
+
+mapleRET6bm.upload.maximum_size=262144
+mapleRET6bm.upload.use_1200bps_touch=false
+mapleRET6bm.upload.file_type=bin
+mapleRET6bm.upload.ram.maximum_size=49152
+mapleRET6bm.upload.flash.maximum_size=262144
+mapleRET6bm.upload.params.quiet=no
+
+mapleRET6bm.menu.upload_method.DFUUploadMethod=STM32duino bootloader
+mapleRET6bm.menu.upload_method.DFUUploadMethod.upload.protocol=maple_dfu
+mapleRET6bm.menu.upload_method.DFUUploadMethod.upload.tool=maple_upload
+mapleRET6bm.menu.upload_method.DFUUploadMethod.build.upload_flags=-DSERIAL_USB -DGENERIC_BOOTLOADER -DCONFIG_MAPLE_MINI_NO_DISABLE_DEBUG=1
+mapleRET6bm.menu.upload_method.DFUUploadMethod.build.vect=VECT_TAB_ADDR=0x8005000
+mapleRET6bm.menu.upload_method.DFUUploadMethod.build.ldscript=ld/stm32f103re-bootloader.ld
+mapleRET6bm.menu.upload_method.DFUUploadMethod.upload.usbID=1EAF:0003
+mapleRET6bm.menu.upload_method.DFUUploadMethod.upload.altID=2
+
+mapleRET6bm.menu.upload_method.serialMethod=Serial
+mapleRET6bm.menu.upload_method.serialMethod.upload.protocol=maple_serial
+mapleRET6bm.menu.upload_method.serialMethod.upload.tool=serial_upload
+mapleRET6bm.menu.upload_method.serialMethod.build.upload_flags=-DCONFIG_MAPLE_MINI_NO_DISABLE_DEBUG -DSERIAL_USB 
+mapleRET6bm.menu.upload_method.serialMethod.build.vect=VECT_TAB_ADDR=0x8002000
+mapleRET6bm.menu.upload_method.serialMethod.build.ldscript=ld/stm32f103re-small-bootloader.ld
+
+mapleRET6bm.menu.upload_method.STLinkMethod=STLink
+mapleRET6bm.menu.upload_method.STLinkMethod.upload.protocol=STLink
+mapleRET6bm.menu.upload_method.STLinkMethod.upload.tool=stlink_upload
+mapleRET6bm.menu.upload_method.STLinkMethod.build.upload_flags=-DCONFIG_MAPLE_MINI_NO_DISABLE_DEBUG=1 -DSERIAL_USB
+mapleRET6bm.menu.upload_method.STLinkMethod.build.vect=VECT_TAB_ADDR=0x8000000
+mapleRET6bm.menu.upload_method.STLinkMethod.build.ldscript=ld/stm32f103re.ld
+
+
+##############################################################
+
 microduino32_flash.name=Microduino Core STM32 to Flash
 
 microduino32_flash.vid.0=0x1EAF

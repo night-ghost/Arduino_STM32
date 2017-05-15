@@ -564,13 +564,14 @@ typedef enum timer_mode {
      * values, the corresponding interrupt is fired. */
     TIMER_OUTPUT_COMPARE,
 
-    /* TIMER_INPUT_CAPTURE, TODO: In this mode, the timer can measure the
+     TIMER_INPUT_CAPTURE, /*TODO: In this mode, the timer can measure the
      *                            pulse lengths of input signals */
     /* TIMER_ONE_PULSE, TODO: In this mode, the timer can generate a single
      *                        pulse on a GPIO pin for a specified amount of
      *                        time. */
      
      TIMER_ENCODER,  //CARLOS Change
+     
 } timer_mode;
 
 /** Timer channel numbers */
@@ -738,6 +739,11 @@ static inline void timer_set_reload(timer_dev *dev, uint16 arr) {
  * @param channel Channel whose compare value to get.
  */
 static inline uint16 timer_get_compare(timer_dev *dev, uint8 channel) {
+    __io uint32 *ccr = &(dev->regs).gen->CCR1 + (channel - 1);
+    return *ccr;
+}
+
+static inline uint16 timer_get_capture(timer_dev *dev, uint8 channel) {
     __io uint32 *ccr = &(dev->regs).gen->CCR1 + (channel - 1);
     return *ccr;
 }
@@ -1023,6 +1029,77 @@ typedef enum timer_oc_mode {
     TIMER_OC_MODE_PWM_2 = 7 << 4,
 } timer_oc_mode;
 
+
+typedef enum timer_ic_mode {
+/*
+Bits 7:4IC1F[3:0]: Input capture 1 filter
+This bit-field defines the frequency used to sample TI1 input and the length of the digital filter applied
+to TI1. The digital filter is made of an event counter in which N events are needed to validate a
+transition on the output:
+0000: No filter, sampling is done at fDTS
+0001: fSAMPLING=fCK_INT , N=2
+0010: fSAMPLING=fCK_INT , N=4
+0011: fSAMPLING=fCK_INT , N=8
+0100: fSAMPLING=fDTS/2, N=6
+0101: fSAMPLING=fDTS/2, N=8
+0110: fSAMPLING=fDTS/4, N=6
+0111: fSAMPLING=fDTS/4, N=8
+1000: fSAMPLING=fDTS/8, N=6
+1001: fSAMPLING=fDTS/8, N=8
+1010: fSAMPLING=fDTS/16, N=5
+1011: fSAMPLING=fDTS/16, N=6
+1100: fSAMPLING=fDTS/16, N=8
+1101: fSAMPLING=fDTS/32, N=5
+1110: fSAMPLING=fDTS/32, N=6
+1111: fSAMPLING=fDTS/32, N=8
+*/
+    TIMER_IC_MODE_FILTER_0      = (0<<4),
+    TIMER_IC_MODE_FILTER_FCK_2  = (1<<4),
+    TIMER_IC_MODE_FILTER_FCK_4  = (2<<4),
+    TIMER_IC_MODE_FILTER_FCK_8  = (3<<4),
+    TIMER_IC_MODE_FILTER_FDTS_2_6  = (4<<4),
+    TIMER_IC_MODE_FILTER_FDTS_2_8  = (5<<4),
+    TIMER_IC_MODE_FILTER_FDTS_4_6  = (6<<4),
+    TIMER_IC_MODE_FILTER_FDTS_4_8  = (7<<4),
+    TIMER_IC_MODE_FILTER_FDTS_8_6  = (8<<4),
+    TIMER_IC_MODE_FILTER_FDTS_8_8  = (9<<4),
+    TIMER_IC_MODE_FILTER_FDTS_16_5  = (10<<4),
+    TIMER_IC_MODE_FILTER_FDTS_16_6  = (11<<4),
+    TIMER_IC_MODE_FILTER_FDTS_16_8  = (12<<4),
+    TIMER_IC_MODE_FILTER_FDTS_32_5  = (13<<4),
+    TIMER_IC_MODE_FILTER_FDTS_32_6  = (14<<4),
+    TIMER_IC_MODE_FILTER_FDTS_32_8  = (15<<4),
+    
+
+
+/*
+BitsBits3:21:0IC1PSC: Input capture 1 prescaler
+This bit-field defines the ratio of the prescaler acting on CC1 input (IC1).
+The prescaler is reset as soon as CC1E=’0’ (TIMx_CCER register).
+00: no prescaler, capture is done each time an edge is detected on the capture input
+01: capture is done once every 2 events
+10: capture is done once every 4 events
+11: capture is done once every 8 events
+*/
+    TIMER_IC_MODE_PRESCALER_1 = (0<<2),
+    TIMER_IC_MODE_PRESCALER_2 = (1<<2),
+    TIMER_IC_MODE_PRESCALER_4 = (2<<2),
+    TIMER_IC_MODE_PRESCALER_8 = (3<<2),
+/*
+CC1S: Capture/Compare 1 Selection
+This bit-field defines the direction of the channel (input/output) as well as the used input.
+00: CC1 channel is configured as output
+01: CC1 channel is configured as input, IC1 is mapped on TI1
+10: CC1 channel is configured as input, IC1 is mapped on TI2
+11: CC1 channel is configured as input, IC1 is mapped on TRC. This mode is working only if an
+internal trigger input is selected through TS bit (TIMx_SMCR register)
+Note: CC1S bits are writable only when the channel is OFF (CC1E = ‘0’ in TIMx_CCER).
+*/
+    TIMER_IC_CAPTURE_RISING = (0<<8),
+    TIMER_IC_CAPTURE_FALLING = (1<<8),
+} timer_ic_mode;
+
+
 /**
  * Timer output compare mode flags.
  * @see timer_oc_set_mode()
@@ -1057,6 +1134,30 @@ static inline void timer_oc_set_mode(timer_dev *dev,
     tmp |= (mode | flags | TIMER_CCMR_CCS_OUTPUT) << shift;
     *ccmr = tmp;
 }
+
+
+// sample: timer_ic_set_mode(timer1,1,TIMER_IC_MODE_FILTER_0 | TIMER_IC_MODE_PRESCALER_8,0);
+
+static inline void timer_ic_set_mode(timer_dev *dev,
+                                     uint8 channel,
+                                     timer_ic_mode mode,
+                                     uint8 inp) {
+    /* channel == 1,2 -> CCMR1; channel == 3,4 -> CCMR2 */
+    __io uint32 *ccmr = &(dev->regs).gen->CCMR1 + (((channel - 1) >> 1) & 1);
+    /* channel == 1,3 -> shift = 0, channel == 2,4 -> shift = 8 */
+    uint8 shift = 8 * (1 - (channel & 1));
+
+    uint32 tmp = *ccmr;
+    tmp &= ~(0xFF << shift);
+    
+    
+    timer_cc_set_pol(dev, channel, mode & TIMER_IC_CAPTURE_FALLING?1:0);
+
+    mode = (timer_ic_mode)(0xff & (uint16_t)mode); 
+    tmp |= (mode | (inp?TIMER_CCMR_CCS_INPUT_TI2 : TIMER_CCMR_CCS_INPUT_TI1)) << shift;
+    *ccmr = tmp;
+}
+
 
 /*
  * Old, erroneous bit definitions from previous releases, kept for

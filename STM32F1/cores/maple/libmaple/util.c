@@ -47,12 +47,37 @@ extern __weak usart_dev* __lm_enable_error_usart(void);
 #endif
 
 /* (Called from exc.S with global interrupts disabled.) */
-__attribute__((noreturn)) void __error(void) {
+__attribute__((noreturn)) void __error(uint32_t num, uint32_t pc, uint32_t lr) {
     if (__lm_error) {
         __lm_error();
     }
     /* Reenable global interrupts */
     nvic_globalirq_enable();
+
+#ifdef ERROR_USART
+    usart_putstr(ERROR_USART, "\r\nexception: ");
+    usart_putudec(ERROR_USART, num);
+    usart_putstr(ERROR_USART, " at ");
+    usart_putudec(ERROR_USART, pc);
+    usart_putstr(ERROR_USART, " lr ");
+    usart_putudec(ERROR_USART, lr);
+    usart_putc(ERROR_USART, '\n');
+    usart_putc(ERROR_USART, '\r');
+#elif defined(SERIAL_USB)
+    extern void usb_putc(char c);
+    extern void usb_putstr(const char *s);
+    extern void usb_putudec(uint32_t l);
+
+    usb_putstr("\r\nexception: ");
+    usb_putudec(num);
+    usb_putstr(" at ");
+    usb_putudec(pc);
+    usb_putstr(" lr ");
+    usb_putudec(lr);
+    usb_putc('\n');
+    usb_putc('\r');
+#endif
+
     throb();
 }
 
@@ -81,7 +106,7 @@ void _fail(const char* file, int line, const char* exp) {
         usart_putc(err_usart, '\r');
     }
     /* Shutdown and error fade */
-    __error();
+    __error(8,0,0);
 }
 
 /*
@@ -106,7 +131,7 @@ void abort() {
     }
 
     /* Shutdown and error fade */
-    __error();
+    __error(9,0,0);
 }
 
 /* This was public as of v0.0.12, so we've got to keep it public. */

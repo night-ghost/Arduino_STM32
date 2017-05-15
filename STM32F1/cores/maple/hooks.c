@@ -28,4 +28,4 @@
 static void __empty() {
 	// Empty
 }
-void yield(void) __attribute__ ((weak, alias("__empty")));
+void yield(unsigned int ttw) __attribute__ ((weak, alias("__empty")));

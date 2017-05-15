@@ -181,3 +181,4 @@ void afio_remap(afio_remap_peripheral remapping) {
         AFIO_BASE->MAPR |= remapping;
     }
 }
+

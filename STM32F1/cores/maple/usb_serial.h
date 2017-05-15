@@ -47,9 +47,10 @@ public:
 	// Roger Clark. Added dummy function so that existing Arduino sketches which specify baud rate will compile.
 	void begin(unsigned long);
 	void begin(unsigned long, uint8_t);
+
     void end(void);
 
-	operator bool() { return true; } // Roger Clark. This is needed because in cardinfo.ino it does if (!Serial) . It seems to be a work around for the Leonardo that we needed to implement just to be compliant with the API
+    operator bool() { return true; } // Roger Clark. This is needed because in cardinfo.ino it does if (!Serial) . It seems to be a work around for the Leonardo that we needed to implement just to be compliant with the API
 
     virtual int available(void);// Changed to virtual
 

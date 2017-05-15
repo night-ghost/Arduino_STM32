@@ -66,23 +66,24 @@ void USBSerial::begin(void) {
     usb_cdcacm_enable(BOARD_USB_DISC_DEV, BOARD_USB_DISC_BIT);
     usb_cdcacm_set_hooks(USB_CDCACM_HOOK_RX, rxHook);
     usb_cdcacm_set_hooks(USB_CDCACM_HOOK_IFACE_SETUP, ifaceSetupHook);
+#else
+ #error "No UsbSerial"
 #endif
 }
 
 //Roger Clark. Two new begin functions has been added so that normal Arduino Sketches that use Serial.begin(xxx) will compile.
 void USBSerial::begin(unsigned long ignoreBaud) 
 {
-volatile unsigned long removeCompilerWarningsIgnoreBaud=ignoreBaud;
+    UNUSED(ignoreBaud);
 
-	ignoreBaud=removeCompilerWarningsIgnoreBaud;
+	begin();
 }
 void USBSerial::begin(unsigned long ignoreBaud, uint8_t ignore)
 {
-volatile unsigned long removeCompilerWarningsIgnoreBaud=ignoreBaud;
-volatile uint8_t removeCompilerWarningsIgnore=ignore;
+    UNUSED(ignoreBaud);
+    UNUSED(ignore);
 
-	ignoreBaud=removeCompilerWarningsIgnoreBaud;
-	ignore=removeCompilerWarningsIgnore;
+	begin();
 }
 
 void USBSerial::end(void) {
@@ -93,20 +94,16 @@ void USBSerial::end(void) {
 }
 
 size_t USBSerial::write(uint8 ch) {
-size_t n = 0;
-    this->write(&ch, 1);
-		return n;
+    return this->write(&ch, 1);
 }
 
 size_t USBSerial::write(const char *str) {
-size_t n = 0;
-    this->write((const uint8*)str, strlen(str));
-	return n;
+    return this->write((const uint8*)str, strlen(str));
 }
 
 size_t USBSerial::write(const uint8 *buf, uint32 len)
 {
-size_t n = 0;
+    size_t n = 0;
     if (!this->isConnected() || !buf) {
         return 0;
     }
@@ -116,7 +113,7 @@ size_t n = 0;
         txed += usb_cdcacm_tx((const uint8*)buf + txed, len - txed);
     }
 
-	return n;
+    return txed;
 }
 
 int USBSerial::available(void) {

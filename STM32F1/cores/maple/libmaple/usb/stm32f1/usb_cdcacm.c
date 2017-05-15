@@ -403,6 +403,30 @@ void usb_cdcacm_putc(char ch) {
         ;
 }
 
+
+void usb_putc(char c){
+    usb_cdcacm_putc(c);
+}
+
+void usb_putstr(const char *s){
+    while(*s) usb_putc(*s++);
+}
+void usb_putudec(uint32_t val){
+
+    char digits[12];
+    int i = 0;
+
+    do {
+        digits[i++] = val % 10 + '0';
+        val /= 10;
+    } while (val > 0);
+
+    while (--i >= 0) {
+        usb_putc(digits[i]);
+    }
+}
+
+
 /* This function is non-blocking.
  *
  * It copies data from a user buffer into the USB peripheral TX

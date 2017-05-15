@@ -39,7 +39,7 @@ static void disable_channel(timer_dev *dev, uint8 channel);
 static void pwm_mode(timer_dev *dev, uint8 channel);
 static void output_compare_mode(timer_dev *dev, uint8 channel);
 static void encoder_mode(timer_dev *dev, uint8 channel) ;//CARLOS
-
+static void input_capture_mode(timer_dev *dev, uint8 channel,uint8_t flags, uint8_t inp);
 
 static inline void enable_irq(timer_dev *dev, timer_interrupt_id iid);
 
@@ -232,6 +232,11 @@ void timer_set_mode(timer_dev *dev, uint8 channel, timer_mode mode) {
     case TIMER_OUTPUT_COMPARE:
         output_compare_mode(dev, channel);
         break;
+
+    case TIMER_INPUT_CAPTURE:
+        input_capture_mode(dev, channel, TIMER_IC_MODE_FILTER_0 | TIMER_IC_MODE_PRESCALER_1, 0);
+        break;
+
     //added by CARLOS. 
     case TIMER_ENCODER: 
         encoder_mode(dev, channel); //find a way to pass all the needed stuff on the 8bit var
@@ -239,6 +244,11 @@ void timer_set_mode(timer_dev *dev, uint8 channel, timer_mode mode) {
     }
 }
 
+//timer_set_capture_mode(dev, channel, TIMER_IC_MODE_FILTER_0 | TIMER_IC_MODE_PRESCALER_1, 0);
+
+void timer_set_capture_mode(timer_dev *dev, uint8 channel,uint8_t flags, uint8_t inp) {
+        input_capture_mode(dev, channel, flags, inp);
+}
 /**
  * @brief Determine whether a timer has a particular capture/compare channel.
  *
@@ -323,6 +333,11 @@ static void pwm_mode(timer_dev *dev, uint8 channel) {
 
 static void output_compare_mode(timer_dev *dev, uint8 channel) {
     timer_oc_set_mode(dev, channel, TIMER_OC_MODE_ACTIVE_ON_MATCH, 0);
+    timer_cc_enable(dev, channel);
+}
+
+static void input_capture_mode(timer_dev *dev, uint8 channel,uint8_t flags, uint8_t inp) {
+    timer_ic_set_mode(dev, channel, flags, inp);
     timer_cc_enable(dev, channel);
 }
 

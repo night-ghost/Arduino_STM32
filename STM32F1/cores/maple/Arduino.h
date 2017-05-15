@@ -34,7 +34,9 @@ void loop();
 #ifdef __cplusplus
 extern "C"{
 #endif // __cplusplus
-void yield(void);
+
+void yield(uint16_t ttw);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

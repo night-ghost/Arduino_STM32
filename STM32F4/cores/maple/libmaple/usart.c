@@ -42,7 +42,8 @@ static usart_dev usart1 = {
     .regs     = USART1_BASE,
     .max_baud = 4500000UL,
     .clk_id   = RCC_USART1,
-    .irq_num  = NVIC_USART1
+    .irq_num  = NVIC_USART1,
+    .gpio_af = GPIO_AF_USART1
 };
 /** USART1 device */
 usart_dev *USART1 = &usart1;
@@ -51,7 +52,8 @@ static usart_dev usart2 = {
     .regs     = USART2_BASE,
     .max_baud = 2250000UL,
     .clk_id   = RCC_USART2,
-    .irq_num  = NVIC_USART2
+    .irq_num  = NVIC_USART2,
+    .gpio_af = GPIO_AF_USART2
 };
 /** USART2 device */
 usart_dev *USART2 = &usart2;
@@ -60,7 +62,8 @@ static usart_dev usart3 = {
     .regs     = USART3_BASE,
     .max_baud = 2250000UL,
     .clk_id   = RCC_USART3,
-    .irq_num  = NVIC_USART3
+    .irq_num  = NVIC_USART3,
+    .gpio_af = GPIO_AF_USART3
 };
 /** USART3 device */
 usart_dev *USART3 = &usart3;
@@ -70,7 +73,8 @@ static usart_dev uart4 = {
     .regs     = UART4_BASE,
     .max_baud = 2250000UL,
     .clk_id   = RCC_UART4,
-    .irq_num  = NVIC_UART4
+    .irq_num  = NVIC_UART4,
+    .gpio_af = GPIO_AF_UART4
 };
 /** UART4 device */
 usart_dev *UART4 = &uart4;
@@ -79,10 +83,23 @@ static usart_dev uart5 = {
     .regs     = UART5_BASE,
     .max_baud = 2250000UL,
     .clk_id   = RCC_UART5,
-    .irq_num  = NVIC_UART5
+    .irq_num  = NVIC_UART5,
+    .gpio_af = GPIO_AF_UART5
 };
 /** UART5 device */
 usart_dev *UART5 = &uart5;
+
+static usart_dev usart6 = {
+    .regs     = USART6_BASE,
+    .max_baud = 2250000UL,
+    .clk_id   = RCC_USART6,
+    .irq_num  = NVIC_USART6,
+    .gpio_af = GPIO_AF_USART6
+};
+/** USART3 device */
+usart_dev *USART6 = &usart6;
+
+
 #endif
 
 /**

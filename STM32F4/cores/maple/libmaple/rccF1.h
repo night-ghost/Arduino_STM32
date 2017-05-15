@@ -462,6 +462,7 @@ typedef enum rcc_clk_id {
     RCC_GPIOG,
     RCC_UART4,
     RCC_UART5,
+    RCC_USART6,
     RCC_TIMER5,
     RCC_TIMER6,
     RCC_TIMER7,

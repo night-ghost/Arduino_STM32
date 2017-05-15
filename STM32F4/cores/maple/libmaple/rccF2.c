@@ -86,6 +86,7 @@ static const struct rcc_dev_info rcc_dev_table[] = {
     [RCC_GPIOG]   = { .clk_domain = AHB1, .line_num =  6 }, //*
     [RCC_UART4]   = { .clk_domain = APB1, .line_num = 19 }, //unchanged
     [RCC_UART5]   = { .clk_domain = APB1, .line_num = 20 }, //unchanged
+    [RCC_USART6]  = { .clk_domain = APB2, .line_num = 20 }, //unchanged
     [RCC_TIMER5]  = { .clk_domain = APB1, .line_num =  3 }, //unchanged
     [RCC_TIMER6]  = { .clk_domain = APB1, .line_num =  4 }, //unchanged
     [RCC_TIMER7]  = { .clk_domain = APB1, .line_num =  5 }, //unchanged

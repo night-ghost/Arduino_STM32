@@ -46,6 +46,9 @@ static void (*systick_user_callback)(void);
 void systick_init(uint32 reload_val) {
     SYSTICK_BASE->RVR = reload_val;
     systick_enable();
+    
+    extern void stopwatch_init();
+    stopwatch_init();
 }
 
 /**

@@ -76,6 +76,25 @@ __exc_usagefault:
 
 .thumb_func
 __default_exc:
+#    ldr r2, NVIC_CCR            @ Enable returning to thread mode even if there are
+#    mov r1 ,#1                  @ pending exceptions. See flag NONEBASETHRDENA.
+#    str r1, [r2]
+#    cpsid i                     @ Disable global interrupts
+#    ldr r2, SYSTICK_CSR         @ Disable systick handler
+#    mov r1, #0
+#    str r1, [r2]
+#    ldr r1, CPSR_MASK           @ Set default CPSR
+#    push {r1}
+#    ldr r1, TARGET_PC           @ Set target pc
+#    push {r1}
+#    sub sp, sp, #24             @ Don't care
+#    ldr r1, EXC_RETURN          @ Return to thread mode
+#    mov lr, r1
+#    bx lr                       @ Exception exit
+
+    ldr r3, [sp, #24]           @ PC of exception - if access to wrong address
+    ldr r1, [sp, #20]           @ LR of exception - if call to wrong address
+    mov r12, r1
     ldr r2, NVIC_CCR            @ Enable returning to thread mode even if there are
     mov r1 ,#1                  @ pending exceptions. See flag NONEBASETHRDENA.
     str r1, [r2]
@@ -84,13 +103,20 @@ __default_exc:
     mov r1, #0
     str r1, [r2]
     ldr r1, CPSR_MASK           @ Set default CPSR
+    mov r2, r12
     push {r1}
     ldr r1, TARGET_PC           @ Set target pc
     push {r1}
-    sub sp, sp, #24             @ Don't care
+    push {r1}                   @ target LR - the same
+    sub sp, sp, #8              @ Don't care - R12 R3
+    push {r2}                   @ R2 - LR
+    push {r3}                   @ R1 - PC of exception
+    push {r0}                   @ R0 - exception code
     ldr r1, EXC_RETURN          @ Return to thread mode
     mov lr, r1
     bx lr                       @ Exception exit
+
+
 
 .align 4
 CPSR_MASK:     .word 0x61000000

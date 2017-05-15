@@ -76,6 +76,7 @@ typedef struct usart_reg_map {
 #define UART4_BASE                      ((struct usart_reg_map*)0x40004C00)
 /** UART5 register map base pointer */
 #define UART5_BASE                      ((struct usart_reg_map*)0x40005000)
+#define USART6_BASE                     ((struct usart_reg_map*)0x40011400) // #define USART6_BASE           (APB2PERIPH_BASE + 0x1400)
 #endif
 
 /*
@@ -242,6 +243,16 @@ typedef struct usart_reg_map {
 #define USART_TX_BUF_SIZE               256
 #endif
 
+#define GPIO_AF_USART1        ((uint8)0x07)  /* USART1 Alternate Function mapping  */
+#define GPIO_AF_USART2        ((uint8)0x07)  /* USART2 Alternate Function mapping  */
+#define GPIO_AF_USART3        ((uint8)0x07)  /* USART3 Alternate Function mapping  */
+
+#define GPIO_AF_UART4         ((uint8)0x08)  /* UART4 Alternate Function mapping  */
+#define GPIO_AF_UART5         ((uint8)0x08)  /* UART5 Alternate Function mapping  */
+#define GPIO_AF_USART6        ((uint8)0x08)  /* USART6 Alternate Function mapping */
+#define GPIO_AF_UART7         ((uint8)0x08)  /* UART7 Alternate Function mapping  */
+#define GPIO_AF_UART8         ((uint8)0x08)  /* UART8 Alternate Function mapping  */
+
 /** USART device type */
 typedef struct usart_dev {
     usart_reg_map *regs;             /**< Register map */
@@ -255,6 +266,7 @@ typedef struct usart_dev {
     uint8 tx_buf[USART_TX_BUF_SIZE];
     rcc_clk_id clk_id;               /**< RCC clock information */
     nvic_irq_num irq_num;            /**< USART NVIC interrupt */
+    uint8 gpio_af;
 } usart_dev;
 
 extern usart_dev *USART1;
@@ -263,6 +275,7 @@ extern usart_dev *USART3;
 #ifdef STM32_HIGH_DENSITY
 extern usart_dev *UART4;
 extern usart_dev *UART5;
+extern usart_dev *USART6;
 #endif
 
 void usart_init(usart_dev *dev);
@@ -360,6 +373,15 @@ static inline uint32 usart_data_pending(usart_dev *dev) {
 static inline void usart_reset_rx(usart_dev *dev) {
     rb_reset(&dev->rbRX);
 }
+
+/**
+ * @brief Discard the contents of a serial port's RX buffer.
+ * @param dev Serial port whose buffer to empty.
+ */
+static inline void usart_reset_tx(usart_dev *dev) {
+    rb_reset(&dev->rbTX);
+}
+
 
 #ifdef __cplusplus
 } // extern "C"

@@ -1,3 +1,8 @@
+modified to be more compatible with Ardupilot
+
+Later is original Readme
+_____
+
 Arduino STM32  
 =============  
 

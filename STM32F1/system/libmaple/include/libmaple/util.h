@@ -55,7 +55,7 @@ extern "C"{
  * Failure routines
  */
 
-void __error(void);
+void __error(uint32_t num, uint32_t pc, uint32_t lr);
 void _fail(const char*, int, const char*);
 void throb(void);
 

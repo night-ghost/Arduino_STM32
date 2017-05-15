@@ -1,0 +1,2 @@
+compiler.cpp.extra_flags="-std=gnu++0x" "-I/home/dmitry/Arduino/libraries" "-I./libraries" -DCONFIG_HAL_BOARD=HAL_BOARD_VRBRAIN -DCONFIG_ARCH_BOARD_VRBRAIN_V45 -include /home/dmitry/Arduino/libraries/defs.h -fsingle-precision-constant -fno-builtin-printf -fassociative-math -freciprocal-math -fno-signed-zeros -fno-trapping-math -funsafe-math-optimizations -O0
+
